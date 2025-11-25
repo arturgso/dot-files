@@ -1,0 +1,149 @@
+/* style.css – Tema Verde para Waybar */
+
+* {
+  font-family: 'Noto Sans Mono', 'Font Awesome 6 Free', 'Font Awesome 6 Brands', monospace;
+  font-size: 13px;
+  color: #e2e0e5;
+}
+
+/* Estilo geral da barra */
+window#waybar {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #e2e0e5;
+}
+
+window#waybar.hidden {
+  opacity: 0.2;
+}
+
+/* Estilo base para os módulos principais */
+#workspaces,
+#settings,
+#hardware,
+#power-profiles-daemon,
+#temperature,
+#language,
+#right,
+#mpd,
+#custom-media,
+#custom-power,
+#custom-pomodoro,
+#keyboard-state,
+#sway-mode,
+#sway-scratchpad,
+#clock,
+#privacy,
+#tray,
+#bluetooth,
+#custom-updates {
+  margin: 8px 2px;
+  border-radius: 10;
+  background-color: #1a2a1a;
+  padding: 8px 12px;   
+  color: #e2e0e5;
+}
+
+#pulseaudio,
+#network,
+#cpu,
+#memory,
+#battery,
+#idle_inhibitor,
+#custom-dunst {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+/* #custom-clipboard, */
+/* #custom-screenshot, */
+/* #custom-dunst, */
+/* #privacy { */
+/*   margin-left: 4px; */
+/*   margin-right: 8px; */
+/* } */
+
+/* Estilo específico para os workspaces (container) */
+#workspaces {
+  background-color: #1a2a1a;
+  padding: 0 4px;
+}
+
+/* Botões de workspace */
+#workspaces button {
+  background: transparent;
+  color: #b8b5c0;
+  min-width: 0;
+}
+
+/* Destaque no workspace focado */
+#workspaces button.focused {
+  color: #4AC05B;
+  font-weight: bold;
+  /* background-color: rgba(74, 192, 91, 0.5); */
+}
+
+/* Workspace visível (em outro monitor) */
+#workspaces button.visible {
+  color: #e2e0e5;
+  background-color: #4AC05B;
+  padding: 0 18px;
+}
+
+/* Workspace urgente */
+#workspaces button.urgent {
+  color: #ff6b6b;
+  background-color: rgba(255, 107, 107, 0.2);
+}
+
+/* Workspace vazio */
+#workspaces button.empty {
+  color: #b8b5c0;
+  opacity: 0.5;
+}
+
+/* Hover simples */
+#workspaces button:hover {
+  background-color: rgba(74, 192, 91, 0.3);
+  color: #e2e0e5;
+}
+
+/* Estilos especiais de status */
+#battery.warning {
+  color: #f1c40f;
+}
+#battery.critical {
+  color: #ff6b6b;
+}
+#temperature.critical {
+  color: #ff6b6b;
+}
+#pulseaudio.muted {
+  color: #b8b5c0;
+  opacity: 0.7;
+}
+#network.disconnected {
+  color: #b8b5c0;
+  opacity: 0.7;
+}
+
+#custom-pomodoro.work {
+  color: #00FF00;
+}
+#custom-pomodoro.break {
+  color: #FFAA00;
+}
+#custom-pomodoro.pause {
+  color: #888888;
+}
+
+#battery.good {
+  color: #19B206;
+}
+
+#battery.warning {
+  color: #FFC107;
+}
+
+#battery.critical {
+  color: #F44336;
+}

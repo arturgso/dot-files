@@ -1,0 +1,284 @@
+// -*- mode: jsonc -*-
+{
+  "position": "bottom", // Waybar position (top|bottom|left|right)
+  "spacing": 4, // Gaps between modules (4px)
+  "modules-left": [
+    "group/hardware",
+    "tray",
+    "custom/updates",
+    "privacy",
+    // "group/right",
+    "sway/mode",
+    "sway/scratchpad"
+  ],
+
+  "modules-center": [
+    "hyprland/workspaces",
+  ],
+
+  "modules-right": [
+    "group/settings",
+    "bluetooth",
+    "clock",
+    "power-profiles-daemon",
+    "custom/power"
+  ],
+
+  // Modules configuration
+  "sway/workspaces": {
+    "disable-scroll": true
+  },
+
+  "keyboard-state": {
+    "numlock": true,
+    "capslock": true,
+    "format": "{name} {icon}",
+    "format-icons": {
+      "locked": "",
+      "unlocked": ""
+    }
+  },
+  "sway/mode": {
+    "format": "<span style=\"italic\">{}</span>"
+  },
+  "sway/scratchpad": {
+    "format": "{icon} {count}",
+    "show-empty": false,
+    "format-icons": [
+      "",
+      ""
+    ],
+    "tooltip": true,
+    "tooltip-format": "{app}: {title}"
+  },
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "",
+      "deactivated": ""
+    }
+  },
+  "tray": {
+    "spacing": 10,
+    // "icons": {
+    //   "blueman": "bluetooth",
+    //   "TelegramDesktop": "$HOME/.local/share/icons/hicolor/16x16/apps/telegram.png"
+    // }
+  },
+
+
+  "clock": {
+    "format": "{:%a, %d %b %H:%M}",
+    "tooltip-format": "{calendar}"
+  },
+  "cpu": {
+    "format": "{usage}% ",
+    "tooltip": false
+  },
+  "memory": {
+    "format": "{used:0.1f}G/{total:0.1f}G "
+  },
+  "temperature": {
+    // "thermal-zone": 2,
+    // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+    "critical-threshold": 80,
+    // "format-critical": "{temperatureC}°C {icon}",
+    "format": "{temperatureC}°C {icon}",
+    "format-icons": [
+      "",
+      "",
+      ""
+    ]
+  },
+  "bluetooth": {
+    "on-click": "blueman-manager",
+    "format": "󰂯",
+    "format-connected": "󰂱 {device_alias}",
+    "format-connected-battery": "󰂱 {device_alias} {device_battery_percentage}%",
+    "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%"
+  },
+  "backlight": {
+    // "device": "acpi_video1",
+    "format": "{percent}% {icon}",
+    "format-icons": [
+      "🌑",
+      "🌘",
+      "🌗",
+      "🌖",
+      "🌕"
+    ]
+  },
+  "battery": {
+    "states": {
+      "good": 95,
+      "warning": 50,
+      "critical": 25
+    },
+    "format": "{icon} {capacity}%",
+    "format-full": "{icon} {capacity}%",
+    "format-charging": " {capacity}%",
+    "format-plugged": " {capacity}%",
+    "format-alt": "{time} {icon}",
+    // "format-good": "", // An empty format will hide the module
+    // "format-full": "",
+    "format-icons": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "battery#bat2": {
+    "bat": "BAT2"
+  },
+  "power-profiles-daemon": {
+    "format": "{icon}",
+    "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+    "tooltip": true,
+    "format-icons": {
+      "default": "",
+      "performance": "",
+      "balanced": "",
+      "power-saver": ""
+    }
+  },
+  "network": {
+    // "interface": "wlp2*", // (Optional) To force the use of this interface
+    "format-wifi": " {essid}",
+    "on-click": "kitty --detach -- bash -c 'nmtui'",
+    "format-ethernet": "{ipaddr}/{cidr} ",
+    "tooltip-format": "{ifname} via {gwaddr} ",
+    "format-linked": "{ifname} (No IP) ",
+    "format-disconnected": "Disconnected ⚠",
+    // "format-alt": "{ifname}: {ipaddr}/{cidr}"
+  },
+  "pulseaudio": {
+    // "scroll-step": 1, // %, can be a float
+    "format": "{icon} {volume}% {format_source}",
+    "format-bluetooth": "{icon} {volume}% {format_source}",
+    "format-bluetooth-muted": " {icon} {format_source}",
+    "format-muted": " {format_source}",
+    "format-source": " {volume}%",
+    "format-source-muted": "",
+    "format-icons": {
+      "default": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "on-click": "pavucontrol"
+  },
+  "custom/power": {
+    "format": " ⏻ ",
+    "tooltip": false,
+    "on-click": "$HOME/.dots/script/powermenu.sh"
+  },
+  "sway/window": {
+    "format": "{}",
+    "max-length": 30
+  },
+  "group/hardware": {
+    "orientation": "horizontal",
+    "modules": [
+      "idle_inhibitor",
+      // "cpu",
+      "memory",
+      "battery"
+    ]
+  },
+  "group/settings": {
+    "orientation": "horizontal",
+    "modules": [
+      "custom/dunst",
+      "pulseaudio",
+      "network"
+    ]
+  },
+  "custom/clipboard": {
+    "on-click": "/home/$USER/.dots/script/rofi-clipboard.sh",
+    "format": ""
+  },
+  "custom/screenshot": {
+    "on-click": "/home/$USER/.dots/script/screenshot.sh",
+    "format": "󰄄"
+  },
+  "custom/dunst": {
+    "format": "{}",
+    "exec": "/home/$USER/.dots/script/dunst_status.sh",
+    "interval": 5,
+    "tooltip": "Modo Não Perturbe",
+    "on-click": "dunstctl set-paused toggle"
+  },
+  "custom/pomodoro": {
+    "format": "{}",
+    "return-type": "json",
+    "exec": ".local/bin/waybar-module-pomodoro --work 30 --shortbreak 10 --longbreak 30 --persist",
+    "on-click": ".local/bin/waybar-module-pomodoro toggle",
+    "on-click-right": ".local/bin/waybar-module-pomodoro reset"
+  },
+  "privacy": {
+    "icon-spacing": 8,
+    "icon-size": 16,
+    "transition-duration": 250,
+    "modules": [
+      {
+        "type": "screenshare",
+        "tooltip": true,
+        "tooltip-icon-size": 24
+      },
+    // {
+    // 	"type": "audio-out",
+    // 	"tooltip": true,
+    // 	"tooltip-icon-size": 24
+    // },
+    {
+      "type": "audio-in",
+      "tooltip": true,
+      // "tooltip-icon-size": 24
+    }
+    ],
+    "ignore-monitor": true,
+    "ignore": [
+      {
+        "type": "audio-in",
+        "name": "cava"
+      },
+      {
+        "type": "screenshare",
+        "name": "obs"
+      }
+    ]
+  },
+
+  "custom/openbracket": {
+    "format": "[",
+      "tooltip": false
+  },
+  "custom/closebracket": {
+    "format": "]",
+    "tooltip": false
+  },    
+  "custom/split": {
+    "format": "|",
+    "tooltip": false
+  },
+  "custom/updates": {
+    "exec": "bash $HOME/.dots/script/checkupdate.sh",
+    "on-click-right": "bash $HOME/.dots/script/checkupdate.sh",
+    "on-click-middle": "hyprctl dispatch exec 'kitty -e sudo dnf update --refresh'",
+    "interval": "9000",
+    "return-type": "json",
+    "format": "{icon}",
+    "format-alt": "{icon} {}",
+    "format-icons": {
+      "has-updates": "󰞀",
+      "updated": "󰕥"
+    }
+
+  }
+}

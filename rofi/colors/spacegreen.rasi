@@ -1,0 +1,16 @@
+/**
+ *
+ * Author : Artur Oliveira (arturgso)
+ * Github : @arturgso
+ * 
+ * Colors
+ **/
+
+* {
+  background:     #1a2a1aff;
+  background-alt: #00000080;
+  foreground:     #e2e0e5ff;
+  selected:       #4ac05bff;
+  active:         #19b206ff;
+  urgent:         #ff6b6bff;
+}
