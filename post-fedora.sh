@@ -73,9 +73,10 @@ ESSENTIAL_PACKAGES=(
   gdbm-devel sqlite-devel ncurses-devel make gcc autoconf automake libtool pkgconfig
   mscore-fonts-all blueman niri hyprlock hypridle hyprpicker hyprshot waybar fastfetch kitty code
   dunst neovim mousepad nwg-look rofi bat cloc git zsh
-  pipewire pipewire-pulseaudio pulseaudio bluetooth power-profiles-daemon flatpak docker
+  pipewire pipewire-pulseaudio pulseaudio bluetooth power-profiles-daemon flatpak docker borg
 )
 
+# Instalação dos pacotes
 echo -e "${BLUE}Instalando pacotes essenciais...${NC}"
 for pkg in "${ESSENTIAL_PACKAGES[@]}"; do
   echo -e "Instalando: ${YELLOW}$pkg${NC}"
@@ -200,5 +201,47 @@ if [[ "$enable_sddm" =~ ^[Ss]$ ]]; then
     echo -e "${GREEN}SDDM habilitado e iniciado${NC}"
 else
     echo -e "${YELLOW}SDDM não será habilitado neste momento${NC}"
+fi
+
+# -------------------
+# Borg Backup
+# -------------------
+echo -e "${BLUE}Configurando Borg Backup...${NC}"
+read -p "Deseja configurar o backup com Borg? (s/N): " setup_borg
+if [[ "$setup_borg" =~ ^[Ss]$ ]]; then
+    echo -e "${BLUE}Listando dispositivos disponíveis...${NC}"
+    lsblk
+    read -p "Digite o dispositivo a ser usado para o backup (ex: /dev/sdX): " backup_disk
+
+    # Criar ponto de montagem temporário
+    MOUNT_DIR="/mnt/backup_borg"
+    sudo mkdir -p "$MOUNT_DIR"
+    sudo mount "$backup_disk" "$MOUNT_DIR" || { echo -e "${RED}Falha ao montar o disco${NC}"; exit 1; }
+
+    # Solicitar senha e montar repositório Borg
+    read -sp "Digite a senha de encriptação do Borg: " BORG_PASS
+    echo
+    export BORG_PASSPHRASE="$BORG_PASS"
+
+    REPO_PATH="$MOUNT_DIR/backup-fedora-mriya"
+    borg mount "$REPO_PATH" /mnt/borg_mount || { echo -e "${RED}Falha ao montar o repositório Borg${NC}"; exit 1; }
+
+    # Pastas e arquivos a restaurar
+    ITEMS=(.var Projetos .wakatime .ssh Cofre Documents Pictures Postman Scripts Vault Videos .oh-my-zsh .themes .icons .default.png .zshrc .gitconfig .wakatime.cfg)
+    for item in "${ITEMS[@]}"; do
+        src="/mnt/borg_mount/$item"
+        dest="$HOME/$item"
+        if [ -e "$src" ]; then
+            cp -r "$src" "$dest"
+            echo -e "${GREEN}Restaurado $item para $dest${NC}"
+            pause
+        fi
+    done
+
+    # Desmontar Borg e disco
+    borg umount /mnt/borg_mount
+    sudo umount "$MOUNT_DIR"
+    sudo rmdir "$MOUNT_DIR"
+    echo -e "${GREEN}Backup restaurado com sucesso${NC}"
 fi
 
