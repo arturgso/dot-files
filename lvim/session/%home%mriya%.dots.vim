@@ -13,11 +13,11 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +256 ~/.dots/post-fedora.sh
+badd +0 README.md
 argglobal
 %argdel
-$argadd .
-edit ~/.dots/post-fedora.sh
+$argadd README.md
+edit README.md
 argglobal
 setlocal fdm=manual
 setlocal fde=
@@ -29,17 +29,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 256 - ((18 * winheight(0) + 19) / 38)
+let s:l = 66 - ((29 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 256
-let s:c = 55 - ((52 * winwidth(0) + 43) / 87)
-if s:c > 0
-  exe 'normal! ' . s:c . '|zs' . 55 . '|'
-else
-  normal! 055|
-endif
+keepjumps 66
+normal! 0
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -53,6 +48,7 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :
