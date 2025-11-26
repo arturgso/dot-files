@@ -164,7 +164,7 @@ install_essential_packages() {
       gdbm-devel sqlite-devel ncurses-devel make gcc autoconf automake libtool pkgconfig
       mscore-fonts-all blueman niri hyprlock hypridle hyprpicker hyprshot waybar fastfetch kitty code
       dunst neovim mousepad nwg-look rofi bat cloc git zsh
-      pipewire pipewire-pulseaudio pulseaudio bluetooth power-profiles-daemon flatpak borg sddm
+      bluez bluez-tools power-profiles-daemon flatpak borg sddm
       rsync wget curl
     )
     
@@ -176,7 +176,7 @@ install_essential_packages() {
 }
 
 enable_essential_services() {
-    local services=(pipewire pipewire-pulseaudio pulseaudio bluetooth power-profiles-daemon)
+    local services=(bluetooth power-profiles-daemon)
     local total=${#services[@]}
     
     for i in "${!services[@]}"; do
@@ -252,7 +252,7 @@ install_flatpaks() {
 }
 
 create_symlinks() {
-    local folders=("niri" "waybar" "dunst")
+    local folders=("niri" "waybar" "dunst" "lvim")
     local total=${#folders[@]}
     
     CONFIG_DIR="$HOME/.config"
@@ -417,7 +417,7 @@ install_asdf() {
         return 1
     }
 
-    local plugins=("java" "nodejs" "golang" "yarn" "rust" "neovim" "ruby" "python" "lazygit" "lazydocker")
+    local plugins=("java" "nodejs" "golang" "yarn" "rust" "neovim" "ruby" "python")
     local total_plugins=${#plugins[@]}
     
     for i in "${!plugins[@]}"; do
@@ -435,10 +435,7 @@ install_asdf() {
     asdf set -u golang 1.25.1
     asdf set -u yarn 1.22.22
     asdf set -u rust stable
-    asdf set -u lazygit 0.55.1
     asdf set -u neovim 0.10.0
-    asdf set -u lazydocker 0.24.1
-    asdf set -u nvim 0.10.0
     asdf set -u ruby 3.4.7
     asdf set -u python 3.11.14
 
@@ -533,10 +530,6 @@ install_all() {
     ((current_step++))
     update_status $current_step $total_steps "Criando links simbólicos"
     create_symlinks
-
-    ((current_step++))
-    update_status $current_step $total_steps "Habilitando SDDM"
-    enable_sddm
 
     ((current_step++))
     update_status $current_step $total_steps "Instalando asdf e linguagens"
