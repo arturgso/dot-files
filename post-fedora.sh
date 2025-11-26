@@ -211,34 +211,88 @@ if confirm_step "Deseja configurar o backup com Borg?"; then
     lsblk
     read -p "Digite o dispositivo a ser usado para o backup (ex: /dev/sda3): " BACKUP_DISK
 
-    MOUNT_DIR="$HOME/backup_borg_mount"
-    BORG_REPO="$MOUNT_DIR/backup-fedora-mriya"  # Nome fixo do repositório
-    BORG_MOUNT="$MOUNT_DIR/borg_repo_mount"
+    # Diretórios separados: um para montar o disco, outro para montar o Borg
+    DISK_MOUNT_DIR="$HOME/backup_disk_mount"
+    BORG_MOUNT_DIR="$HOME/borg_repo_mount"
 
-    # Criar e montar diretório
-    mkdir -p "$MOUNT_DIR" "$BORG_MOUNT"
-    echo -e "${BLUE}Montando disco...${NC}"
-    sudo mount "$BACKUP_DISK" "$MOUNT_DIR" || {
-        echo -e "${RED}Falha ao montar o dispositivo${NC}"
+    # Criar diretórios
+    mkdir -p "$DISK_MOUNT_DIR" "$BORG_MOUNT_DIR"
+
+    # Montar disco
+    echo -e "${BLUE}Montando disco $BACKUP_DISK em $DISK_MOUNT_DIR...${NC}"
+    sudo mount "$BACKUP_DISK" "$DISK_MOUNT_DIR" || {
+        echo -e "${RED}Falha ao montar o dispositivo $BACKUP_DISK${NC}"
         pause
         exit 1
     }
+
+    # Verificar se o repositório existe
+    BORG_REPO="$DISK_MOUNT_DIR/backup-fedora-mriya"
+    if [ ! -d "$BORG_REPO" ]; then
+        echo -e "${RED}Repositório Borg não encontrado em $BORG_REPO${NC}"
+        echo -e "${YELLOW}Conteúdo de $DISK_MOUNT_DIR:${NC}"
+        ls -la "$DISK_MOUNT_DIR"
+        sudo umount "$DISK_MOUNT_DIR"
+        pause
+        exit 1
+    fi
+
+    echo -e "${GREEN}Repositório Borg encontrado: $BORG_REPO${NC}"
 
     # Configurar senha
     read -s -p "Digite a senha de encriptação do Borg: " BORG_PASS
     echo
     export BORG_PASSPHRASE="$BORG_PASS"
 
-    # Montar repositório Borg
-    echo -e "${BLUE}Montando repositório Borg...${NC}"
-    borg mount "$BORG_REPO" "$BORG_MOUNT" || {
+    # Montar repositório Borg em diretório SEPARADO
+    echo -e "${BLUE}Montando repositório Borg em $BORG_MOUNT_DIR...${NC}"
+    
+    borg mount "$BORG_REPO" "$BORG_MOUNT_DIR"
+    
+    if [ $? -ne 0 ]; then
         echo -e "${RED}Falha ao montar o repositório Borg${NC}"
-        sudo umount "$MOUNT_DIR"
+        sudo umount "$DISK_MOUNT_DIR"
+        unset BORG_PASSPHRASE
         pause
         exit 1
-    }
+    fi
 
-    # Restaurar arquivos
+    echo -e "${GREEN}Repositório Borg montado com sucesso em $BORG_MOUNT_DIR${NC}"
+
+    # Encontrar o backup mais recente
+    echo -e "${BLUE}Procurando backup mais recente...${NC}"
+    LATEST_BACKUP=$(ls -lt "$BORG_MOUNT_DIR" | grep '^d' | head -1 | awk '{print $9}')
+    
+    if [ -z "$LATEST_BACKUP" ]; then
+        echo -e "${RED}Nenhum backup encontrado no repositório${NC}"
+        borg umount "$BORG_MOUNT_DIR"
+        sudo umount "$DISK_MOUNT_DIR"
+        unset BORG_PASSPHRASE
+        pause
+        exit 1
+    fi
+
+    echo -e "${GREEN}Backup mais recente: $LATEST_BACKUP${NC}"
+
+    # Definir o caminho base para os arquivos (home/mriya dentro do backup)
+    BACKUP_BASE="$BORG_MOUNT_DIR/$LATEST_BACKUP/home/mriya"
+    
+    if [ ! -d "$BACKUP_BASE" ]; then
+        echo -e "${RED}Estrutura de diretório não encontrada: $BACKUP_BASE${NC}"
+        echo -e "${YELLOW}Conteúdo do backup $LATEST_BACKUP:${NC}"
+        find "$BORG_MOUNT_DIR/$LATEST_BACKUP" -type d | head -20
+        borg umount "$BORG_MOUNT_DIR"
+        sudo umount "$DISK_MOUNT_DIR"
+        unset BORG_PASSPHRASE
+        pause
+        exit 1
+    fi
+
+    echo -e "${GREEN}Estrutura do backup encontrada em: $BACKUP_BASE${NC}"
+    echo -e "${BLUE}Conteúdo disponível para restauração:${NC}"
+    ls -la "$BACKUP_BASE"
+
+    # Restaurar arquivos do caminho correto
     echo -e "${BLUE}Copiando dados do backup...${NC}"
     for item in \
         ".var" \
@@ -259,18 +313,27 @@ if confirm_step "Deseja configurar o backup com Borg?"; then
         ".zshrc" \
         ".gitconfig" \
         ".wakatime.cfg"; do
-        if [ -e "$BORG_MOUNT/$item" ]; then
-            rsync -av --progress "$BORG_MOUNT/$item" "$HOME/"
+        if [ -e "$BACKUP_BASE/$item" ]; then
+            echo -e "${GREEN}Copiando $item...${NC}"
+            rsync -av --progress "$BACKUP_BASE/$item" "$HOME/"
         else
             echo -e "${YELLOW}Aviso: $item não encontrado no backup${NC}"
         fi
     done
 
-    # Desmontar tudo
-    echo -e "${BLUE}Desmontando repositório...${NC}"
-    borg umount "$BORG_MOUNT"
+    # Desmontar tudo - ORDEM IMPORTANTE
+    echo -e "${BLUE}Desmontando repositório Borg...${NC}"
+    borg umount "$BORG_MOUNT_DIR"
+    
     echo -e "${BLUE}Desmontando disco...${NC}"
-    sudo umount "$MOUNT_DIR"
+    sudo umount "$DISK_MOUNT_DIR"
+
+    # Limpar diretórios
+    rmdir "$BORG_MOUNT_DIR"
+    rmdir "$DISK_MOUNT_DIR"
+
+    # Limpar variável de ambiente
+    unset BORG_PASSPHRASE
 
     echo -e "${GREEN}Backup Borg restaurado com sucesso!${NC}"
     pause
