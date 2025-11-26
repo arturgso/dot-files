@@ -51,9 +51,9 @@ if confirm_step "Deseja atualizar o sistema agora?"; then
 fi
 
 # -------------------
-# Adicionando Copr e RPM Fusion
+# Adicionando Copr, RPM Fusion, Docker Repo e Code
 # -------------------
-if confirm_step "Deseja adicionar Copr e RPM Fusion?"; then
+if confirm_step "Deseja adicionar Copr, RPM Fusion e repositório do Docker?"; then
     echo -e "${BLUE}Adicionando Copr e RPM Fusion...${NC}"
     sudo dnf copr enable solopasha/hyprland -y
     pause
@@ -65,7 +65,16 @@ if confirm_step "Deseja adicionar Copr e RPM Fusion?"; then
     rm -f rpmfusion-*-release-43.noarch.rpm
     pause
 
-    echo -e "${GREEN}Copr e RPM Fusion habilitados${NC}"
+    echo -e "${BLUE}Configurando repositório do Docker...${NC}"
+    sudo dnf -y install dnf-plugins-core
+    sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+
+    echo -e "${BLUE}Configurando repositório do VS Code...${NC}"
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\nautorefresh=1\ntype=rpm-md\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
+    sudo dnf check-update
+
+    echo -e "${GREEN}Copr, RPM Fusion, Docker e VS Code habilitados${NC}"
     pause
 fi
 
@@ -93,25 +102,15 @@ ESSENTIAL_PACKAGES=(
   mscore-fonts-all blueman niri hyprlock hypridle hyprpicker hyprshot waybar fastfetch kitty code
   dunst neovim mousepad nwg-look rofi bat cloc git zsh
   pipewire pipewire-pulseaudio pulseaudio bluetooth power-profiles-daemon flatpak borg sddm
+  docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 )
 
-# -------------------
-# Instalação dos pacotes
-# -------------------
-for pkg in "${ESSENTIAL_PACKAGES[@]}"; do
-    if confirm_step "Deseja instalar o pacote $pkg?"; then
-        echo -e "Instalando: ${YELLOW}$pkg${NC}"
-        if [[ "$pkg" == "code" ]]; then
-            echo -e "${BLUE}Configurando repositório do VS Code...${NC}"
-            sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-            echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\nautorefresh=1\ntype=rpm-md\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
-            sudo dnf check-update
-        fi
-        sudo dnf install -y "$pkg"
-        pause
-    fi
-done
-pause
+# Pergunta única para instalação de todos os pacotes essenciais
+if confirm_step "Deseja instalar todos os pacotes essenciais listados?"; then
+    echo -e "${BLUE}Instalando pacotes essenciais...${NC}"
+    sudo dnf install -y "${ESSENTIAL_PACKAGES[@]}"
+    pause
+fi
 
 # -------------------
 # Habilitando serviços essenciais (exceto SDDM)
