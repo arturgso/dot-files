@@ -102,7 +102,7 @@ ESSENTIAL_PACKAGES=(
   mscore-fonts-all blueman niri hyprlock hypridle hyprpicker hyprshot waybar fastfetch kitty code
   dunst neovim mousepad nwg-look rofi bat cloc git zsh
   pipewire pipewire-pulseaudio pulseaudio bluetooth power-profiles-daemon flatpak borg sddm
-  docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin rsync
 )
 
 # Pergunta única para instalação de todos os pacotes essenciais
@@ -212,36 +212,66 @@ if confirm_step "Deseja configurar o backup com Borg?"; then
     read -p "Digite o dispositivo a ser usado para o backup (ex: /dev/sda3): " BACKUP_DISK
 
     MOUNT_DIR="$HOME/backup_borg_mount"
-    mkdir -p "$MOUNT_DIR"
-    echo -e "${BLUE}Montando disco e configurando Borg...${NC}"
-    sudo mount "$BACKUP_DISK" "$MOUNT_DIR"
+    BORG_REPO="$MOUNT_DIR/backup-fedora-mriya"  # Nome fixo do repositório
+    BORG_MOUNT="$MOUNT_DIR/borg_repo_mount"
 
+    # Criar e montar diretório
+    mkdir -p "$MOUNT_DIR" "$BORG_MOUNT"
+    echo -e "${BLUE}Montando disco...${NC}"
+    sudo mount "$BACKUP_DISK" "$MOUNT_DIR" || {
+        echo -e "${RED}Falha ao montar o dispositivo${NC}"
+        pause
+        exit 1
+    }
+
+    # Configurar senha
     read -s -p "Digite a senha de encriptação do Borg: " BORG_PASS
+    echo
     export BORG_PASSPHRASE="$BORG_PASS"
 
+    # Montar repositório Borg
     echo -e "${BLUE}Montando repositório Borg...${NC}"
-    borg mount "$MOUNT_DIR/backup-fedora-mriya" "$MOUNT_DIR/borg_repo_mount" || echo -e "${RED}Falha ao montar o repositório Borg${NC}"
+    borg mount "$BORG_REPO" "$BORG_MOUNT" || {
+        echo -e "${RED}Falha ao montar o repositório Borg${NC}"
+        sudo umount "$MOUNT_DIR"
+        pause
+        exit 1
+    }
 
-    echo -e "${BLUE}Copiando pastas e arquivos do backup para o home...${NC}"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/.var" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/Projetos" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/.wakatime" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/.ssh" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/Cofre" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/Documents" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/Pictures" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/Postman" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/Scripts" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/Vault" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/Videos" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/.oh-my-zsh" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/.themes" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/.icons" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/.default.png" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/.zshrc" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/.gitconfig" "$HOME/"
-    rsync -av --progress "$MOUNT_DIR/borg_repo_mount/.wakatime.cfg" "$HOME/"
+    # Restaurar arquivos
+    echo -e "${BLUE}Copiando dados do backup...${NC}"
+    for item in \
+        ".var" \
+        "Projetos" \
+        ".wakatime" \
+        ".ssh" \
+        "Cofre" \
+        "Documents" \
+        "Pictures" \
+        "Postman" \
+        "Scripts" \
+        "Vault" \
+        "Videos" \
+        ".oh-my-zsh" \
+        ".themes" \
+        ".icons" \
+        ".default.png" \
+        ".zshrc" \
+        ".gitconfig" \
+        ".wakatime.cfg"; do
+        if [ -e "$BORG_MOUNT/$item" ]; then
+            rsync -av --progress "$BORG_MOUNT/$item" "$HOME/"
+        else
+            echo -e "${YELLOW}Aviso: $item não encontrado no backup${NC}"
+        fi
+    done
 
-    echo -e "${GREEN}Backup Borg restaurado${NC}"
+    # Desmontar tudo
+    echo -e "${BLUE}Desmontando repositório...${NC}"
+    borg umount "$BORG_MOUNT"
+    echo -e "${BLUE}Desmontando disco...${NC}"
+    sudo umount "$MOUNT_DIR"
+
+    echo -e "${GREEN}Backup Borg restaurado com sucesso!${NC}"
     pause
 fi
