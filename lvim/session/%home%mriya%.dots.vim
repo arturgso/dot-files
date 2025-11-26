@@ -13,11 +13,11 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +169 post-fedora.sh
+badd +256 ~/.dots/post-fedora.sh
 argglobal
 %argdel
-$argadd post-fedora.sh
-edit post-fedora.sh
+$argadd .
+edit ~/.dots/post-fedora.sh
 argglobal
 setlocal fdm=manual
 setlocal fde=
@@ -29,12 +29,17 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 169 - ((33 * winheight(0) + 24) / 48)
+let s:l = 256 - ((18 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 169
-normal! 059|
+keepjumps 256
+let s:c = 55 - ((52 * winwidth(0) + 43) / 87)
+if s:c > 0
+  exe 'normal! ' . s:c . '|zs' . 55 . '|'
+else
+  normal! 055|
+endif
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf

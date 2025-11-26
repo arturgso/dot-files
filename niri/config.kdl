@@ -122,8 +122,7 @@ layout {
   // Alternatively, you can override it with a window rule called
   // `draw-border-with-background`.
   border {
-    off
-    width 4
+    width 1
     active-color   "#707070"      // Neutral gray
     inactive-color "#d0d0d0"      // Light gray
     urgent-color   "#cc4444"      // Softer red
@@ -148,7 +147,7 @@ layer-rule {
 }
 overview {
   workspace-shadow {
-    off
+    
   }
 }
 // Add lines like this to spawn processes at startup.
@@ -161,6 +160,8 @@ spawn-at-startup "bash" "-c" "wl-paste --watch cliphist store &"
 spawn-at-startup "dms" "run"
 spawn-at-startup "/usr/libexec/polkit-mate-authentication-agent-1"
 spawn-at-startup "/home/mriya/.dots/script/set_wallpaper.sh"
+spawn-at-startup "hypridle"
+
 environment {
   XDG_CURRENT_DESKTOP "niri"
   QT_QPA_PLATFORM "wayland"
@@ -261,7 +262,7 @@ window-rule {
 binds {
   // === System & Overview ===
   Mod+D repeat=false {spawn "~/.dots/script/launcher";} 
-  Mod+Tab repeat=false { toggle-overview; }
+  Mod+A repeat=false { toggle-overview; }
   Mod+Shift+Slash { show-hotkey-overlay; }
 
   // === Application Launchers ===
@@ -448,7 +449,7 @@ binds {
   Alt+Print { screenshot-window; }
   // === System Controls ===
   Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
-  Mod+Shift+P { power-off-monitors; }
+  Mod+Shift+P { spawn "hyprpicker" "-a"; }
 }
 debug {
   honor-xdg-activation-with-invalid-serial

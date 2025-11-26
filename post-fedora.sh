@@ -253,7 +253,7 @@ install_flatpaks() {
 }
 
 create_symlinks() {
-    local folders=("niri" "waybar" "dunst" "lvim")
+    local folders=("niri" "waybar" "dunst" "lvim" "hypr")
     local total=${#folders[@]}
     
     CONFIG_DIR="$HOME/.config"

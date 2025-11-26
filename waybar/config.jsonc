@@ -268,17 +268,17 @@
     "tooltip": false
   },
   "custom/updates": {
-    "exec": "bash $HOME/.dots/script/checkupdate.sh",
-    "on-click-right": "bash $HOME/.dots/script/checkupdate.sh",
-    "on-click-middle": "hyprctl dispatch exec 'kitty -e sudo dnf update --refresh'",
+    "exec": "~/.dots/script/checkupdate.sh",
+    "on-click-right": "~/.dots/script/checkupdate.sh",
+    "on-click-middle": "niri msg action spawn -- kitty -e sudo dnf update --refresh && flatpak update -y",
     "interval": "9000",
     "return-type": "json",
-    "format": "{icon}",
-    "format-alt": "{icon} {}",
+    "format": "{icon} {text}",
     "format-icons": {
-      "has-updates": "󰞀",
-      "updated": "󰕥"
+        "has-updates": "󰞀",
+        "updated": "󰕥"
     }
+}
 
   }
 }
