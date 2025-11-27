@@ -1,0 +1,15 @@
+/**
+ *
+ * Author : mriya (custom)
+ * 
+ * Colors - Aurora Sky (light)
+ **/
+
+* {
+    background:     #F5F7FFFF;
+    background-alt: #E3E8F8FF;
+    foreground:     #1F2435FF;
+    selected:       #5C7CFFFF;
+    active:         #30C4A4FF;
+    urgent:         #FF6B6BFF;
+}

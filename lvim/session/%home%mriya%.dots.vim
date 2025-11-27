@@ -13,11 +13,11 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +0 niri/config.kdl
+badd +18 ~/.dots/rofi/powermenu/type-2/shared/colors.rasi
 argglobal
 %argdel
-$argadd niri/config.kdl
-edit niri/config.kdl
+$argadd .
+edit ~/.dots/rofi/powermenu/type-2/shared/colors.rasi
 argglobal
 setlocal fdm=manual
 setlocal fde=
@@ -29,12 +29,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 77 - ((31 * winheight(0) + 20) / 40)
+let s:l = 18 - ((17 * winheight(0) + 20) / 41)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 77
-normal! 02|
+keepjumps 18
+normal! 09|
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -48,6 +48,7 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

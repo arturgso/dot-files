@@ -1,0 +1,15 @@
+/**
+ *
+ * Author : mriya (custom)
+ * 
+ * Colors - Linen Cloud (light)
+ **/
+
+* {
+    background:     #FDFCF8FF;
+    background-alt: #F0EEE3FF;
+    foreground:     #3D382FFF;
+    selected:       #00A0C6FF;
+    active:         #6BAA2EFF;
+    urgent:         #D9552CFF;
+}

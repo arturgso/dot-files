@@ -1,0 +1,15 @@
+/**
+ *
+ * Author : mriya (custom)
+ * 
+ * Colors - Nocturne (dark)
+ **/
+
+* {
+    background:     #0C101BFF;
+    background-alt: #141B29FF;
+    foreground:     #E4E9FFFF;
+    selected:       #5567D9FF;
+    active:         #3BC8AFFF;
+    urgent:         #FF6B81FF;
+}

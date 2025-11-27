@@ -1,0 +1,15 @@
+/**
+ *
+ * Author : mriya (custom)
+ * 
+ * Colors - Nebula (dark)
+ **/
+
+* {
+    background:     #0B0F16FF;
+    background-alt: #161B2BFF;
+    foreground:     #DADDF1FF;
+    selected:       #7F6BFFFF;
+    active:         #5CE0C0FF;
+    urgent:         #F25F8BFF;
+}
