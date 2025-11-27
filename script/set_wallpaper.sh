@@ -5,5 +5,4 @@
 sleep 0.5
 
 # Define a imagem
-/home/mriya/.cargo/bin/awww img ~/.default.png
-
+/home/mriya/.cargo/bin/awww restore

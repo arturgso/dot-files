@@ -43,6 +43,10 @@ gestures {
   }
 }
 
+clipboard {
+  disable-primary
+}
+
 // Input device configuration.
 // Find the full list of options on the wiki:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Input
@@ -72,7 +76,6 @@ input {
   }
   trackpoint {
   }
-
 
   focus-follows-mouse
 }
@@ -460,4 +463,3 @@ binds {
 debug {
   honor-xdg-activation-with-invalid-serial
 }
-

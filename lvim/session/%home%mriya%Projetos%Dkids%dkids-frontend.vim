@@ -13,18 +13,12 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +132 src/components/product/ProductReviews.tsx
-badd +13 src/services/ReviewsService.ts
-badd +74 src/components/product/RelatedProducts.tsx
-badd +6 src/pages/Home.tsx
-badd +75 src/components/product/ProductGrid.tsx
-badd +48 src/components/product/ProductCard.tsx
+badd +0 src/components/product/ProductCard.tsx
 argglobal
 %argdel
 $argadd .
-edit src/components/product/RelatedProducts.tsx
+edit src/components/product/ProductCard.tsx
 argglobal
-balt src/pages/Home.tsx
 setlocal fdm=manual
 setlocal fde=
 setlocal fmr={{{,}}}
@@ -35,11 +29,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 74 - ((8 * winheight(0) + 20) / 41)
+let s:l = 48 - ((31 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 74
+keepjumps 48
 normal! 0
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
