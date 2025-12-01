@@ -15,4 +15,4 @@
 
 /* Import color-scheme from `colors` directory */
 
-@import "~/.dots/rofi/colors/navy.rasi"
+@import "~/.dots/rofi/colors/nocturne.rasi"

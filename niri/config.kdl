@@ -276,7 +276,7 @@ binds {
   Mod+B hotkey-overlay-title="Open default browser" {
     spawn "flatpak" "run" "one.ablaze.floorp";
   }
-  Mod+F hotkey-overlay-title="Open file manager" {spawn "nemo";}
+  Mod+F hotkey-overlay-title="Open file manager" {spawn "nautilus";}
 
   Mod+V hotkey-overlay-title="Clipboard Manager" {
     spawn "~/.dots/script/rofi-clipboard.sh";

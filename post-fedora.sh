@@ -199,7 +199,6 @@ install_nerd_fonts() {
     update_status 3 3 "Instalando fontes"
     unzip nerd-fonts.zip -d nerd-fonts
     (cd nerd-fonts && ./install.sh)
-    rm -rf nerd-fonts nerd-fonts.zip
     
     echo -e "${GREEN}Nerd Fonts instaladas com sucesso${NC}"
     pause

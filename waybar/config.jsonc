@@ -5,7 +5,7 @@
   "spacing": 3, // Slightly tighter gaps between modules
   "modules-left": [
     "custom/updates",
-    "network",
+    // "network",
     "group/hardware",
     "hyprland/workspaces",
     "sway/mode",
