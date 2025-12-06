@@ -7,13 +7,12 @@
     "custom/updates",
     // "network",
     "group/hardware",
-    "hyprland/workspaces",
     "sway/mode",
     "sway/scratchpad"
   ],
 
   "modules-center": [
-    "clock"
+    "clock",
   ],
 
   "modules-right": [

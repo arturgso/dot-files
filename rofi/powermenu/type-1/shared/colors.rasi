@@ -10,9 +10,10 @@
  * adapta    catppuccin    everforest    navy       paper
  * arc       cyberpunk     gruvbox       nord       solarized
  * black     dracula       lovelace      onedark    yousai
+ * spacecrimson spacegreen    spacelime
  *
  **/
 
 /* Import color-scheme from `colors` directory */
 
-@import "~/.dots/rofi/colors/nocturne.rasi"
+@import "~/.dots/rofi/colors/spacelime.rasi"

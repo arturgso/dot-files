@@ -1,0 +1,16 @@
+/**
+ *
+ * Author : Artur Oliveira (arturgso)
+ * Github : @arturgso
+ *
+ * Vibrant lime variant of the space series
+ **/
+
+* {
+  background:     #0f1f0fff;
+  background-alt: #162c12f2;
+  foreground:     #f1ffe7ff;
+  selected:       #b7ff18ff;
+  active:         #9dfc4dff;
+  urgent:         #ffb347ff;
+}
